@@ -2,7 +2,7 @@ require('./check-versions')()
 
 var config = require('../config')
 if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
+    process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
 }
 
 var opn = require('opn')
@@ -11,9 +11,9 @@ var express = require('express')
 var webpack = require('webpack')
 var Mock = require('mockjs')
 var proxyMiddleware = require('http-proxy-middleware')
-var webpackConfig = process.env.NODE_ENV === 'testing'
-  ? require('./webpack.prod.conf')
-  : require('./webpack.dev.conf')
+var webpackConfig = process.env.NODE_ENV === 'testing' ?
+    require('./webpack.prod.conf') :
+    require('./webpack.dev.conf')
 var bodyParser = require('body-parser');
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
@@ -27,29 +27,33 @@ var app = express()
 var compiler = webpack(webpackConfig)
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
-  publicPath: webpackConfig.output.publicPath,
-  quiet: true
+    publicPath: webpackConfig.output.publicPath,
+    quiet: true
 })
 
 var hotMiddleware = require('webpack-hot-middleware')(compiler, {
-  log: false,
-  heartbeat: 2000
+    log: false,
+    heartbeat: 2000
 })
 // force page reload when html-webpack-plugin template changes
 compiler.plugin('compilation', function (compilation) {
-  compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
-    hotMiddleware.publish({ action: 'reload' })
-    cb()
-  })
+    compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
+        hotMiddleware.publish({
+            action: 'reload'
+        })
+        cb()
+    })
 })
 
 // proxy api requests
 Object.keys(proxyTable).forEach(function (context) {
-  var options = proxyTable[context]
-  if (typeof options === 'string') {
-    options = { target: options }
-  }
-  app.use(proxyMiddleware(options.filter || context, options))
+    var options = proxyTable[context]
+    if (typeof options === 'string') {
+        options = {
+            target: options
+        }
+    }
+    app.use(proxyMiddleware(options.filter || context, options))
 })
 
 // handle fallback for HTML5 history API
@@ -66,60 +70,64 @@ app.use(hotMiddleware)
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
 //请求本地json文件
-app.use('/mock',express.static('./mock'))
+app.use('/mock', express.static('./mock'))
 
 //模拟后台分页
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.post('/mock/test',function (req,res) {
-  var params = req.body;
-  var total = params.total;
-  var index = 0,id=0;
-  if (params.page==1) {
-    index = total>20?20:total; //第一页20条数据
-    id = 1;
-  } else {
-    index = (params.page-1)*params.limit+20<total?params.limit:total-(params.page-2)*params.limit-20;
-    id = (params.page-2)*params.limit+20;
-  }
-  var key = 'res|'+index;
-  var mockData = Mock.mock({
-    [key]: [{
-         'id|+1': id,
-         'url':'@url()',
-         'admin':'@domain()',
-         'time':'@datetime()',
-         'test':{
-           'timeAdmin':'@image()'
-         }
-     }],
-     total
-   });    
-  
-  res.send(mockData);     
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.post('/mock/test', function (req, res) {
+    var params = req.body;
+    var total = params.total;
+    var index = 0,
+        id = 0;
+    if (params.page == 1) {
+        index = total > 20 ? 20 : total; //第一页20条数据
+        id = 1;
+    } else {
+        index = (params.page - 1) * params.limit + 20 < total ? params.limit : total - (params.page - 2) * params.limit - 20;
+        id = (params.page - 2) * params.limit + 20;
+    }
+    var key = 'res|' + index;
+    var mockData = Mock.mock({
+        [key]: [{
+            'id|+1': id,
+            'url': '@url()',
+            'admin': '@domain()',
+            'time': '@datetime()',
+            'test': {
+                'timeAdmin': '@image()'
+            }
+        }],
+        total
+    });
+
+    res.send(mockData);
 })
 var uri = 'http://localhost:' + port
 
 var _resolve
 var readyPromise = new Promise(resolve => {
-  _resolve = resolve
+    _resolve = resolve
 })
 
 console.log('> Starting dev server...')
 devMiddleware.waitUntilValid(() => {
-  console.log('> Listening at ' + uri + '\n')
-  // when env is testing, don't need open it
-  if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-    opn(uri)
-  }
-  _resolve()
+    console.log('> Listening at ' + uri + '\n')
+    // when env is testing, don't need open it
+    if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
+        opn(uri)
+    }
+    _resolve()
 })
 
 var server = app.listen(port)
 
 module.exports = {
-  ready: readyPromise,
-  close: () => {
-    server.close()
-  }
+    ready: readyPromise,
+    close: () => {
+        server.close()
+    }
 }
