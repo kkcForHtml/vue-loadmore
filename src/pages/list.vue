@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import vHeader from '@/components/header';
 import scrollView from '@/components/scrollView'; //下拉刷新下拉加载组件
 import { mapMutations } from 'vuex';
 export default {
@@ -45,8 +44,7 @@ export default {
 
     },
     components: {
-        scrollView,
-        vHeader
+        scrollView
     }
 }
 </script>

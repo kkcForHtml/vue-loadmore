@@ -3,14 +3,13 @@
         <v-header></v-header>
         <infinit-scroll @changeScrollViewData="changeData" :url="url" :limit="limit" :total="total">
             <ul slot="container">
-                <li v-for="item in arr">{{item.admin}}</li>
+                <li v-for="(item, index) in arr" :key="index">{{item.admin}}</li>
             </ul>
         </infinit-scroll>
     </div>
 </template>
 
 <script>
-    import vHeader from '@/components/header'
     import infinitScroll from '@/components/infinitScroll'
     import { mapMutations } from 'vuex';
     export default {
@@ -39,7 +38,6 @@
             })
         },
         components: {
-            vHeader,
             infinitScroll
         }
     }

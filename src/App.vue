@@ -13,19 +13,7 @@ export default {
     name: 'app',
     data() {
         return {
-            // b:{
-            //             enterClass: 'bounceInLeft',
-            //             leaveClass: 'bounceOutRight'
-            //       }
             transitionName: "slide"
-        }
-    },
-    transitions() {
-        return {
-            b: {
-                enterClass: 'bounceInLeft',
-                leaveClass: 'bounceOutRight'
-            }
         }
     },
     watch: {

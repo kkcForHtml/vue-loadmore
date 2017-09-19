@@ -16,15 +16,15 @@ export default new Router({
         {
             path: '/home/list',
             name: 'list',
-            component (resovle) {
-                require(['@/pages/list'],resovle)
+            component(resovle) {
+                require(['@/pages/list'], resovle)
             }
         },
         {
             path: '/home/infinitelist',
             name: 'infinitelist',
-            component (resovle) {
-                require(['@/pages/infinitelist'],resovle)
+            component(resovle) {
+                require(['@/pages/infinitelist'], resovle)
             }
         }
 
